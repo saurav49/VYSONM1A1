@@ -85,7 +85,7 @@ routes.post('/short', async (req, res) => {
     });
   }
 });
-routes.post('/batch-insert-short', async (req, res) => {
+routes.post('/iterative-insert-short', async (req, res) => {
   try {
     const start = performance.now();
     const { originalUrl, iteration } = req.body;
@@ -119,6 +119,40 @@ routes.post('/batch-insert-short', async (req, res) => {
         original_url: originalUrl,
         short_code: shortCode,
       });
+    }
+    const end = performance.now();
+    console.log(`API took ${(end - start).toFixed(2)} ms`);
+    return res.status(201).json({
+      status: true,
+      message: 'Successful!!',
+    });
+  } catch (e) {
+    return res.status(500).json({
+      status: false,
+      error: e,
+    });
+  }
+});
+routes.post('/batch-insert-short-one-million', async (req, res) => {
+  try {
+    const start = performance.now();
+    const ITERATION = 1000000;
+    const BATCH = 500;
+    for (let i = 0; i < ITERATION; i += BATCH) {
+      let values: Array<string> = [];
+      for (let j = 0; j < BATCH; j++) {
+        const randomNum = i + j;
+        const originalUrl = `https://google.com/${randomNum}`;
+        let shortCode = '';
+        shortCode = nanoid(7);
+        values.push(`('${originalUrl}', '${shortCode}')`);
+      }
+      await query(
+        `
+                INSERT INTO url_shortener (original_url, short_code)
+                VALUES ${values.join(',')}
+            `,
+      );
     }
     const end = performance.now();
     console.log(`API took ${(end - start).toFixed(2)} ms`);
