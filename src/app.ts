@@ -36,16 +36,37 @@ routes.get('/ping', (_req, res) => {
     message: 'Server up and running',
   });
 });
-// routes.get('/check-db-size', async (_req, res) => {
-//   const r = await query(
-//     `SELECT pg_size_pretty(pg_total_relation_size('url_shortener'));`,
-//   );
-//   return res.status(200).json({
-//     status: true,
-//     data: r?.rows[0],
-//   });
-// });
-
+routes.get('/get-db-info', async (_req, res) => {
+  const r = await query(
+    `SELECT pg_size_pretty(pg_total_relation_size('url_shortener'));`,
+  );
+  const rowsInfo = await query(
+    `
+    SELECT COUNT(*)
+    FROM url_shortener
+    `,
+  );
+  return res.status(200).json({
+    status: true,
+    data: { size: r?.rows[0], rows: rowsInfo?.rows[0]?.count },
+  });
+});
+routes.get('/get-original-urls', async (_req, res) => {
+  const start = performance.now();
+  const r = await query(
+    `
+            SELECT original_url
+            FROM url_shortener
+            WHERE short_code IN ('ETNWWsa', 'ztuxXrc', 'DW-cvTG', '-HTuHot', 'w6nK0wd')
+        `,
+  );
+  const end = performance.now();
+  console.log(`API took ${(end - start).toFixed(2)} ms`);
+  return res.status(200).json({
+    status: true,
+    data: r?.rows,
+  });
+});
 routes.post('/short', async (req, res) => {
   try {
     const { originalUrl } = req.body;
