@@ -63,6 +63,12 @@ routes.post('/short', async (req, res) => {
       original_url: originalUrl,
       short_code: shortCode,
     });
+    return res.status(201).json({
+      status: true,
+      data: {
+        originalUrl,
+      },
+    });
   } catch (e) {
     return res.status(500).json({
       status: false,
