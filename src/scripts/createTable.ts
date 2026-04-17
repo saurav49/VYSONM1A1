@@ -7,7 +7,7 @@ async function createTable() {
               (
                   id SERIAL PRIMARY KEY,
                   original_url TEXT NOT NULL,
-                  short TEXT NOT NULL UNIQUE,
+                  short_code TEXT NOT NULL UNIQUE,
                   created_at TIMESTAMPTZ DEFAULT NOW()
               )
               `);
