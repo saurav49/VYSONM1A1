@@ -188,5 +188,42 @@ routes.post('/batch-insert-short-one-million', async (req, res) => {
     });
   }
 });
+routes.post('/batch-insert-short-ten-million', async (req, res) => {
+  try {
+    const start = performance.now();
+    const ITERATION = 10000000;
+    const BATCH = 1000;
+    await query('BEGIN');
+    for (let i = 0; i < ITERATION; i += BATCH) {
+      let values: Array<string> = [];
+      for (let j = 0; j < BATCH; j++) {
+        const randomNum = i + j;
+        const originalUrl = `https://google.com/${randomNum}`;
+        let shortCode = '';
+        shortCode = nanoid(10);
+        values.push(`('${originalUrl}', '${shortCode}')`);
+      }
+      await query(
+        `
+                INSERT INTO url_shortener (original_url, short_code)
+                VALUES ${values.join(',')}
+            `,
+      );
+    }
+    await query('COMMIT'); // use to group multiple operations
+    const end = performance.now();
+    console.log(`API took ${(end - start).toFixed(2)} ms`);
+    return res.status(201).json({
+      status: true,
+      message: 'Successful!!',
+    });
+  } catch (e) {
+    await query('ROLLBACK');
+    return res.status(500).json({
+      status: false,
+      error: e,
+    });
+  }
+});
 
 export default app;
