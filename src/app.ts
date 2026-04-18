@@ -51,20 +51,24 @@ routes.get('/get-db-info', async (_req, res) => {
     data: { size: r?.rows[0], rows: rowsInfo?.rows[0]?.count },
   });
 });
+[];
 routes.get('/get-original-urls', async (_req, res) => {
+  const ITERATIONS = 1000000;
   const start = performance.now();
-  const r = await query(
-    `
-            SELECT original_url
-            FROM url_shortener
-            WHERE short_code IN ('ETNWWsa', 'ztuxXrc', 'DW-cvTG', '-HTuHot', 'w6nK0wd')
-        `,
-  );
+  for (let i = 0; i < ITERATIONS; i++) {
+    await query(
+      `
+                SELECT original_url
+                FROM url_shortener
+                WHERE short_code IN ('ETNWWsa', 'ztuxXrc', 'DW-cvTG', '-HTuHot', '5jlDxZ8')
+      `,
+    );
+  }
   const end = performance.now();
   console.log(`API took ${(end - start).toFixed(2)} ms`);
   return res.status(200).json({
     status: true,
-    data: r?.rows,
+    message: 'Executed successfully',
   });
 });
 routes.post('/short', async (req, res) => {
@@ -205,9 +209,9 @@ routes.post('/batch-insert-short-ten-million', async (req, res) => {
       }
       await query(
         `
-                INSERT INTO url_shortener (original_url, short_code)
-                VALUES ${values.join(',')}
-            `,
+            INSERT INTO url_shortener (original_url, short_code)
+            VALUES ${values.join(',')}
+        `,
       );
     }
     await query('COMMIT'); // use to group multiple operations
