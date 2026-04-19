@@ -1,0 +1,5 @@
+CREATE TABLE IF NOT EXISTS migrations (
+    id SERIAL PRIMARY KEY,
+    name TEXT UNIQUE,
+    executed_at TIMESTAMPZ DEFAULT NOW()
+)
