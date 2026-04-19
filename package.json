@@ -6,7 +6,9 @@
   "scripts": {
     "migration:run": "tsx src/scripts/migrations.ts",
     "dev:watch": "tsx watch src/server.ts",
-    "dev": "tsx src/server.ts"
+    "dev": "tsx src/server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js"
   },
   "devDependencies": {
     "@types/bun": "latest",
