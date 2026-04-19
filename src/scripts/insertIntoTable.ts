@@ -15,7 +15,6 @@ export async function insertIntoTable({
             `,
       [original_url, short_code],
     );
-    console.log('Data added successfully');
   } catch (e) {
     console.error(e);
   }
