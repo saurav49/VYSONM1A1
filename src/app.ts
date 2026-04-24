@@ -22,7 +22,40 @@ routes.get('/health', (_req, res) => {
   });
 });
 
-routes.post('/todos', async (req, res) => {});
+// [Q2] Insert 3-5 sample users and 5-10 sample todos (distributed among the users) into the tables. Share the SQL queries and a screenshot of both tables.
+
+routes.post('/todos', async (req, res) => {
+  try {
+    const { title, userId } = req.body;
+    if (!title) {
+      return res.status(401).json({
+        status: false,
+        message: 'Title is a required field',
+      });
+    }
+    if (!userId) {
+      return res.status(401).json({
+        status: false,
+        message: 'UserId is a required field',
+      });
+    }
+    const result = await query(
+      `
+        INSERT INTO todos (title, user_id)
+        values ($1, $2)
+        RETURNING *
+      `,
+      [title, userId],
+    );
+    return res.status(201).json({
+      status: true,
+      data: result?.rows,
+    });
+  } catch (e) {
+    console.error({ e });
+    throw e;
+  }
+});
 
 routes.post('/users', async (req, res) => {
   try {
@@ -54,6 +87,62 @@ routes.post('/users', async (req, res) => {
     });
   } catch (e) {
     console.log({ e });
+    throw e;
+  }
+});
+
+// [Q3] Write a SQL query to update the is_completed status of a todo by id. Share a screenshot before and after the update.
+
+routes.patch('/todos/:todoId', async (req, res) => {
+  try {
+    const { todoId } = req.params;
+    const { isCompleted } = req.body;
+    if (!todoId) {
+      return res.status(401).json({
+        status: false,
+        message: 'Todo Id not found',
+      });
+    }
+    const updateTodo = await query(
+      `
+        UPDATE todos
+          SET is_completed=$1
+        WHERE id=$2
+        RETURNING *
+      `,
+      [isCompleted, todoId],
+    );
+    return res.status(201).json({
+      status: true,
+      data: updateTodo?.rows,
+    });
+  } catch (e) {
+    console.log({ e });
+    throw e;
+  }
+});
+
+// [Q4] Write a SQL query to fetch all todos for a specific user, ordered by creation date. Test it with one of your sample users.
+
+routes.get('/todos', async (req, res) => {
+  try {
+    const { userId } = req.query;
+
+    const reqdTodos = await query(
+      `
+        SELECT *
+        FROM todos
+        WHERE user_id=$1
+        ORDER BY created_at DESC
+      `,
+      [userId],
+    );
+    return res.status(200).json({
+      status: true,
+      data: reqdTodos?.rows,
+    });
+  } catch (e) {
+    console.error({ e });
     throw e;
   }
 });
