@@ -5,6 +5,7 @@
   "private": true,
   "scripts": {
     "migration:run": "tsx src/scripts/migrations.ts",
+    "addUser:run": "tsx src/scripts/addUser.ts",
     "dev:watch": "tsx watch src/server.ts",
     "dev": "tsx src/server.ts",
     "build": "tsc",
