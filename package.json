@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "migration:run": "tsx src/scripts/migrations.ts",
-    "addUser:run": "tsx src/scripts/addUser.ts",
+    "batchInsertUser:run": "tsx src/scripts/batchInsertUser.ts",
     "dev:watch": "tsx watch src/server.ts",
     "dev": "tsx src/server.ts",
     "build": "tsc",
@@ -24,7 +24,6 @@
     "typescript": "^6.0.3"
   },
   "dependencies": {
-    "@faker-js/faker": "^10.4.0",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
