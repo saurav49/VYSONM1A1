@@ -147,4 +147,46 @@ routes.get('/todos', async (req, res) => {
   }
 });
 
+// [Q6] Write a SQL query to fetch all overdue todos (due date is in the past and is_completed is false) for all users. Order the results by due date.
+
+routes.get('/todos/get-overdue-todo', async (req, res) => {
+  try {
+    const result = await query(
+      `
+        SELECT * 
+        FROM todos 
+        WHERE is_completed = false 
+          AND due_date < NOW()
+        ORDER BY due_date DESC
+      `,
+    );
+    return res.status(200).json({
+      status: true,
+      data: result?.rows,
+    });
+  } catch (e) {
+    console.error({ e });
+    throw e;
+  }
+});
+
+routes.get('/todos/group-by-user', async (req, res) => {
+  try {
+    const result = await query(
+      `
+        SELECT user_id, count(*) 
+        FROM todos 
+        GROUP BY user_id
+      `,
+    );
+    return res.status(200).json({
+      status: true,
+      data: result?.rows,
+    });
+  } catch (e) {
+    console.error({ e });
+    throw e;
+  }
+});
+
 export default app;

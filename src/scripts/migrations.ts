@@ -39,6 +39,7 @@ async function migration() {
         migrationDone?.rowCount &&
         migrationDone.rowCount > 0
       ) {
+        console.log(`Skipped: ${file}`);
         continue;
       }
       const fileContent = fs.readFileSync(
