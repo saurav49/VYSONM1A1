@@ -189,4 +189,30 @@ routes.get('/todos/group-by-user', async (req, res) => {
   }
 });
 
+routes.delete('/users/:userId', async (req, res) => {
+  try {
+    const { userId } = req.params;
+    if (!userId) {
+      return res.status(401).json({
+        status: false,
+        message: 'User id is required',
+      });
+    }
+    await query(
+      `
+        DELETE FROM users
+        WHERE id=$1
+      `,
+      [userId],
+    );
+    return res.status(201).json({
+      status: true,
+      message: 'User removed successfully',
+    });
+  } catch (e) {
+    console.error({ e });
+    throw e;
+  }
+});
+
 export default app;
