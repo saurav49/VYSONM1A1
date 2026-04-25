@@ -24,7 +24,6 @@ async function migration() {
       })
       .sort()
       .slice(1);
-    console.log({ files });
     for (const file of files) {
       const migrationDone = await query(
         `
