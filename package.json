@@ -6,6 +6,7 @@
   "scripts": {
     "migration:run": "tsx src/scripts/migrations.ts",
     "batchInsertUser:run": "tsx src/scripts/batchInsertUser.ts",
+    "batchInsertTodo:run": "tsx src/scripts/batchInsertTodo.ts",
     "dev:watch": "tsx watch src/server.ts",
     "dev": "tsx src/server.ts",
     "build": "tsc",
